@@ -26,7 +26,7 @@ class AnsiTest extends TestBase
         $style  = new Style();
         $parser = new Ansi($style->current(), new Tags($style->all()));
 
-        $obj = Mockery::mock('League\CLImate\TerminalObject');
+        $obj = Mockery::mock(TerminalObject::class);
         $obj->shouldReceive('result')->once()->andReturn("<green>I am green</green>");
         $obj->shouldReceive('sameLine')->once()->andReturn(false);
         $obj->shouldReceive('getParser')->once()->andReturn($parser);
@@ -48,7 +48,7 @@ class AnsiTest extends TestBase
         $style  = new Style();
         $parser = new NonAnsi($style->current(), new Tags($style->all()));
 
-        $obj = Mockery::mock('League\CLImate\TerminalObject');
+        $obj = Mockery::mock(TerminalObject::class);
         $obj->shouldReceive('result')->once()->andReturn("<green>I am not green</green>");
         $obj->shouldReceive('sameLine')->once()->andReturn(false);
         $obj->shouldReceive('getParser')->once()->andReturn($parser);
@@ -64,12 +64,12 @@ class AnsiTest extends TestBase
 
     public function it_will_recognize_non_ansi_systems()
     {
-        $system = Mockery::mock('League\CLImate\Util\System\Windows');
+        $system = Mockery::mock(Windows::class);
         $system->shouldReceive('hasAnsiSupport')->andReturn(false);
 
         $parser = ParserFactory::getInstance($system, [], new Tags([]));
 
-        $this->assertInstanceOf('League\CLImate\Decorator\Parser\NonAnsi', $parser);
+        $this->assertInstanceOf(NonAnsi::class, $parser);
     }
 
     /** @test */
