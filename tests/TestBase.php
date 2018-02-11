@@ -9,7 +9,7 @@ use League\CLImate\Util\System\Linux;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-class TestBase extends TestCase
+abstract class TestBase extends TestCase
 {
     public static $functions;
 
@@ -25,7 +25,6 @@ class TestBase extends TestCase
     /** @var League\CLImate\Util\UtilFactory */
     public $util;
 
-    protected $record_it = false;
 
     public function setUp()
     {
@@ -39,13 +38,9 @@ class TestBase extends TestCase
         $this->output = Mockery::mock(Output::class);
         $this->reader = Mockery::mock(Stdin::class);
 
-        $this->cli = new CLImate();
+        $this->cli = new CLImate;
         $this->cli->setOutput($this->output);
         $this->cli->setUtil($this->util);
-
-        if (method_exists($this, 'internalSetup')) {
-            $this->internalSetup();
-        }
     }
 
     public function tearDown()
@@ -61,10 +56,6 @@ class TestBase extends TestCase
      */
     protected function shouldWrite($content, $count = 1)
     {
-        if ($this->record_it) {
-            file_put_contents('test-log', $content, FILE_APPEND);
-        }
-
         return $this->output->shouldReceive('write')->times($count)->with($content);
     }
 
@@ -120,11 +111,5 @@ class TestBase extends TestCase
     protected function shouldStopPersisting($times = 1)
     {
         $this->output->shouldReceive('persist')->with(false)->times($times)->andReturn($this->output);
-    }
-
-    /** @test */
-    public function it_does_nothing()
-    {
-        // nada
     }
 }
